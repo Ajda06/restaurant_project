@@ -15,16 +15,19 @@
             <a href="{{ url_for('client_panel') }}">
                 <img src="{{ url_for('static', filename='image/logo.png') }}">
             </a>
+            <a href="{{ url_for('view_cart') }}" class="menu_btn">
+                <i class="fa-solid fa-cart-plus"></i> Виж количката
+            </a>
         </div>
         <ul>
-            <li><a href="client_panel" class="action">Home</a></li>
-            <li><a href="about">About</a></li>
-            <li><a href="menu">Menu</a></li>
-            <li><a href="gallery">Gallery</a></li>
+            <li><a href="{{ url_for('client_panel') }}" class="action">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('redirect_menu_html') }}">Menu</a></li>
+            <li><a href="{{ url_for('gallery') }}">Gallery</a></li>
             <li><a href="{{ url_for('order_page') }}">Order</a></li>
         </ul>
         <div class="login">
-            <a href="logout">Logout</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
         </div>
     </nav>
 
@@ -55,9 +58,8 @@
 
                     {% if dish.availability %}
                         <p class="price">${{ dish.price }}<sub><del>${{ (dish.price + 2)|round(2) }}</del></sub></p>
-                        <a href="{{ url_for('quick_order', dish_id=dish.id) }}" class="menu_btn">
-                            <i class="fa-solid fa-burger"></i> Order Now
-                        
+                        <a href="{{ url_for('add_to_cart', dish_id=dish.id) }}" class="menu_btn">
+                            <i class="fa-solid fa-cart-plus"></i> Добави
                         </a>
                     {% else %}
                         <p class="price"><s>Изчерпано</s></p>

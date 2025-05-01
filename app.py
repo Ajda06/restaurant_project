@@ -124,6 +124,65 @@ def client_panel():
         return redirect(url_for('login'))
     return render_template('client_panel.html')
 
+@app.route('/add_to_cart/<int:dish_id>')
+def add_to_cart(dish_id):
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT id, name, price FROM dishes WHERE id = %s", (dish_id,))
+    dish = cursor.fetchone()
+
+    if not dish:
+        return "Невалидно ястие"
+
+    if 'cart' not in session:
+        session['cart'] = []
+
+    # Проверка дали ястието вече е в количката
+    for item in session['cart']:
+        if item['dish_id'] == dish_id:
+            item['quantity'] += 1
+            break
+    else:
+        session['cart'].append({
+            'dish_id': dish['id'],
+            'name': dish['name'],
+            'price': float(dish['price']),
+            'quantity': 1
+        })
+
+    return redirect(url_for('redirect_menu_html'))
+@app.route('/cart')
+def view_cart():
+    cart = session.get('cart', [])
+    total = sum(item['price'] * item['quantity'] for item in cart)
+    return render_template('cart.html', cart=cart, total=total)
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    if 'user_id' not in session or 'cart' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    cart = session['cart']
+    cursor = db.cursor()
+
+    for item in cart:
+        cursor.execute("""
+            INSERT INTO orders (user_id, dish_id, total_price, status)
+            VALUES (%s, %s, %s, %s)
+        """, (user_id, item['dish_id'], item['price'] * item['quantity'], 'active'))
+
+    db.commit()
+    session.pop('cart')  # изчистване на количката
+    return render_template('order_success.html')
+@app.route('/clear_cart', methods=['POST'])
+def clear_cart():
+    session.pop('cart', None)
+    return redirect(url_for('view_cart'))
+@app.route('/remove_from_cart/<int:dish_id>', methods=['POST'])
+def remove_from_cart(dish_id):
+    if 'cart' in session:
+        session['cart'] = [item for item in session['cart'] if item['dish_id'] != dish_id]
+    return redirect(url_for('view_cart'))
+
 # MY ORDERS
 @app.route('/my_orders')
 def my_orders():
