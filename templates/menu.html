@@ -27,7 +27,7 @@
             <li><a href="{{ url_for('order_page') }}">Order</a></li>
         </ul>
         <div class="login">
-            <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{ url_for('login') }}">Login</a>
         </div>
     </nav>
 
@@ -64,6 +64,7 @@
                     {% else %}
                         <p class="price"><s>Изчерпано</s></p>
                     {% endif %}
+                    
                 </div>
             </div>
             {% endfor %}

@@ -126,9 +126,13 @@ def client_panel():
 
 @app.route('/add_to_cart/<int:dish_id>')
 def add_to_cart(dish_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT id, name, price FROM dishes WHERE id = %s", (dish_id,))
     dish = cursor.fetchone()
+    cursor.close()
 
     if not dish:
         return "Невалидно ястие"
@@ -136,9 +140,8 @@ def add_to_cart(dish_id):
     if 'cart' not in session:
         session['cart'] = []
 
-    # Проверка дали ястието вече е в количката
     for item in session['cart']:
-        if item['dish_id'] == dish_id:
+        if item['dish_id'] == dish['id']:
             item['quantity'] += 1
             break
     else:
@@ -150,11 +153,16 @@ def add_to_cart(dish_id):
         })
 
     return redirect(url_for('redirect_menu_html'))
+
 @app.route('/cart')
 def view_cart():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     cart = session.get('cart', [])
     total = sum(item['price'] * item['quantity'] for item in cart)
     return render_template('cart.html', cart=cart, total=total)
+
 @app.route('/checkout', methods=['POST'])
 def checkout():
     if 'user_id' not in session or 'cart' not in session:
@@ -430,6 +438,13 @@ def gallery():
 @app.route('/order')
 def order_page():
     return render_template('order.html')
+
+@app.route('/delete_reservation/<int:reservation_id>')
+def delete_reservation(reservation_id):
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM reservations WHERE id = %s", (reservation_id,))
+    db.commit()
+    return redirect(url_for('view_reservations'))
 
 @app.route('/logout')
 def logout():
