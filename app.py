@@ -120,9 +120,12 @@ def quick_order(dish_id):
 # CLIENT PANEL
 @app.route('/client_panel')
 def client_panel():
-    if session.get('is_admin') != 0:
-        return redirect(url_for('login'))
-    return render_template('client_panel.html')
+    if session.get('is_admin') == 0:
+        return render_template('client_panel.html')
+    if session.get('is_admin') == 1:
+        return redirect(url_for('admin_panel'))
+    return redirect(url_for('login'))
+
 
 @app.route('/add_to_cart/<int:dish_id>')
 def add_to_cart(dish_id):
@@ -449,10 +452,7 @@ def about():
 @app.route('/gallery')
 def gallery():
     return render_template('gallery.html')
-
-@app.route('/order')
-def order_page():
-    return render_template('order.html')
+    
 
 @app.route('/delete_reservation/<int:reservation_id>')
 def delete_reservation(reservation_id):
