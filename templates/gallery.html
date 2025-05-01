@@ -16,7 +16,9 @@
     <nav>
 
         <div class="logo">
-            <a href="index.html"><img src="static/image/logo.png"></a>
+            <a href="{{ url_for('client_panel') }}">
+                <img src="{{ url_for('static', filename='image/logo.png') }}">
+            </a>
         </div>
 
         <ul>
