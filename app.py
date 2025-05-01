@@ -427,6 +427,21 @@ def delete_employee(employee_id):
     db.commit()
     return redirect(url_for('manage_employees'))
 
+@app.route('/add_employees/', methods=['GET', 'POST'])
+def add_employee():
+    if session.get('is_admin') != 1:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        name = request.form['name']
+        role = request.form['role']
+        phone = request.form['phone']
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO employees (name, role, phone) VALUES (%s, %s, %s)", (name, role, phone))
+        db.commit()
+        return redirect('/view_staff')
+    return render_template('add_employee.html')
+
+
 @app.route('/about')
 def about():
     return render_template('about.html')
