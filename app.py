@@ -61,9 +61,31 @@ def signup():
 @app.route('/menu')
 def redirect_menu_html():
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM dishes WHERE availability = 1")
+
+    # Филтри от заявката
+    category = request.args.get('category')
+    max_price = request.args.get('max_price')
+    available = request.args.get('available')
+
+    query = "SELECT * FROM dishes WHERE 1=1"
+    params = []
+
+    if category:
+        query += " AND category = %s"
+        params.append(category)
+
+    if max_price:
+        query += " AND price <= %s"
+        params.append(max_price)
+
+    if available == '1':
+        query += " AND availability = 1"
+
+    cursor.execute(query, tuple(params))
     dishes = cursor.fetchall()
+
     return render_template("menu.html", dishes=dishes)
+
 
 # ORDER FORM
 @app.route('/order/<int:dish_id>', methods=['GET', 'POST'])

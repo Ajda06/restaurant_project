@@ -29,6 +29,9 @@
             </tr>
             {% endfor %}
         </table>
+        <p style="margin-top: 15px; font-weight: bold;">
+            Обща сума на всички поръчки: ${{ (orders | sum(attribute='total_price')) | round(2) }}
+        </p>
     {% else %}
         <p>Нямате направени поръчки.</p>
     {% endif %}

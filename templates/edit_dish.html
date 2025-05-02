@@ -9,7 +9,12 @@
 <body>
 
     <h1>Редактирай ястие</h1>
-
+    <select name="category" required>
+        <option value="Основни" {% if dish.category == 'Основни' %}selected{% endif %}>Основни</option>
+        <option value="Десерти" {% if dish.category == 'Десерти' %}selected{% endif %}>Десерти</option>
+        <option value="Напитки" {% if dish.category == 'Напитки' %}selected{% endif %}>Напитки</option>
+    </select>
+    
     <form method="POST">
         <input type="text" name="name" value="{{ dish.name }}" required><br>
         <input type="text" name="category" value="{{ dish.category }}" required><br>

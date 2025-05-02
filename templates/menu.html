@@ -15,9 +15,7 @@
             <a href="{{ url_for('client_panel') }}">
                 <img src="{{ url_for('static', filename='image/logo.png') }}">
             </a>
-            <a href="{{ url_for('view_cart') }}" class="menu_btn">
-                <i class="fa-solid fa-cart-plus"></i> Виж количката
-            </a>
+            
         </div>
         <ul>
             <li><a href="/" class="action">Home</a></li>
@@ -35,7 +33,18 @@
     <div class="banner_bg">
         <h1>Our <span>Menu</span></h1>
     </div>
-
+    <div class="filter-box">
+        <form method="get" action="{{ url_for('redirect_menu_html') }}">
+            <input type="text" name="category" placeholder="Категория (напр. Супи)" value="{{ request.args.get('category', '') }}">
+            <input type="number" step="0.01" name="max_price" placeholder="Макс. цена" value="{{ request.args.get('max_price', '') }}">
+            <label>
+                <input type="checkbox" name="available" value="1" {% if request.args.get('available') == '1' %}checked{% endif %}>
+                Само налични
+            </label>
+            <button type="submit">Филтрирай</button>
+        </form>
+    </div>
+    
     <!-- Dynamic Menu Section -->
     <div class="menu">
         <div class="menu_box anim">
@@ -48,18 +57,12 @@
                 <div class="menu_text">
                     <h2>{{ dish.name }}</h2>
                     <p>{{ dish.description }}</p>
-                    <div class="menu_icon">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star-half-stroke"></i>
-                    </div>
+                    
 
                     {% if dish.availability %}
                         <p class="price">${{ dish.price }}<sub><del>${{ (dish.price + 2)|round(2) }}</del></sub></p>
-                        <a href="{{ url_for('quick_order', dish_id=dish.id) }}" class="menu_btn">
-                            <i class="fa-solid fa-cart-plus"></i> Добави
+                        <a href="{{ url_for('quick_order', dish_id=dish.id) }}" class="menu_btn">Поръчай
+                            
                         </a>
                     {% else %}
                         <p class="price"><s>Изчерпано</s></p>

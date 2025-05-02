@@ -11,7 +11,13 @@
 
     <form method="POST">
         <input type="text" name="name" placeholder="Име" required><br>
-        <input type="text" name="category" placeholder="Категория" required><br>
+        <select name="category" required>
+            <option value="">-- Избери категория --</option>
+            <option value="Основни">Основни</option>
+            <option value="Десерти">Десерти</option>
+            <option value="Напитки">Напитки</option>
+        </select>
+        
         <input type="number" step="0.01" name="price" placeholder="Цена" required><br>
         <textarea name="description" placeholder="Описание" required></textarea><br>
         <input type="text" name="image_filename" placeholder="Име на снимка (напр. menu_1.jpg)" required><br>
